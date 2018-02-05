@@ -2,13 +2,10 @@ package com.lichao.chaovolley.http;
 
 import android.os.Handler;
 import android.os.Looper;
-
 import com.alibaba.fastjson.JSON;
 import com.lichao.chaovolley.http.interfaces.IDataListener;
 import com.lichao.chaovolley.http.interfaces.IHttpListener;
-
 import org.apache.http.HttpEntity;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,37 +13,34 @@ import java.io.InputStreamReader;
 import java.util.Map;
 
 /**
- * M  对应响应类
- * Created by Administrator on 2018-02-01.
+ * Created by Administrator on 2018-02-05.
  */
 
-public class JsonDealLitener<M> implements IHttpListener {
-    private Class<M> response;
-
-    /**
-     * 回调调用层的接口
-     */
+public class JsonDealLisener<M> implements IHttpListener {
+    private Class<M> responceClass;
     private IDataListener<M> dataListener;
-
+    /**
+     * 获取主线程的Handle
+     * 通过handle切换至主线程
+     */
     Handler handler = new Handler(Looper.getMainLooper());
 
-    public JsonDealLitener(Class<M> response, IDataListener<M> dataListener) {
-        this.response = response;
+    public JsonDealLisener(Class<M> responceClass, IDataListener<M> dataListener) {
+        this.responceClass = responceClass;
         this.dataListener = dataListener;
     }
 
     @Override
     public void onSuccess(HttpEntity httpEntity) {
-        InputStream inputStream = null;
+        InputStream inputStream=null;
         try {
-            inputStream = httpEntity.getContent();
-            //得到网络返回的数据子线程
+            inputStream=httpEntity.getContent();
             String content = getContent(inputStream);
-            final M m = JSON.parseObject(content, response);
+            final M responce= JSON.parseObject(content,responceClass);
             handler.post(new Runnable() {
                 @Override
                 public void run() {
-                    dataListener.onSuccess(m);
+                    dataListener.onSuccess(responce);
                 }
             });
         } catch (IOException e) {
@@ -56,7 +50,7 @@ public class JsonDealLitener<M> implements IHttpListener {
 
     @Override
     public void onFail() {
-        dataListener.onError();
+
     }
 
     @Override
@@ -64,11 +58,6 @@ public class JsonDealLitener<M> implements IHttpListener {
 
     }
 
-    /**
-     * InputStream 转 String
-     * @param inputStream
-     * @return
-     */
     private String getContent(InputStream inputStream) {
         String content = null;
         try {
@@ -80,8 +69,8 @@ public class JsonDealLitener<M> implements IHttpListener {
                     sb.append(line + "\n");
                 }
             } catch (IOException e) {
-                dataListener.onError();
                 System.out.println("Error=" + e.toString());
+                dataListener.onError();
             } finally {
                 try {
                     inputStream.close();

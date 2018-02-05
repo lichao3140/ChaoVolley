@@ -7,7 +7,7 @@ package com.lichao.chaovolley;
 public class LoginRespense {
     private int code;
     private String user_id;
-    private String  time;
+    private String time;
     private String name;
 
     public int getCode() {

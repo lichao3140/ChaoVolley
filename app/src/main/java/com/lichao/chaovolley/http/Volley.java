@@ -37,7 +37,7 @@ public class Volley {
         try {
             ThreadPoolManager.getInstance().execute(new FutureTask<Object>(httpTask, null));
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            dataListener.onError();
         }
     }
 }

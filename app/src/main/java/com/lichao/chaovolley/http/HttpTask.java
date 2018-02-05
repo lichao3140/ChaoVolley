@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.lichao.chaovolley.http.interfaces.IHttpListener;
 import com.lichao.chaovolley.http.interfaces.IHttpService;
 import com.lichao.chaovolley.http.interfaces.RequestHolder;
+import java.util.concurrent.FutureTask;
 
 /**
  * Created by Administrator on 2018-02-01.
@@ -11,6 +12,7 @@ import com.lichao.chaovolley.http.interfaces.RequestHolder;
 
 public class HttpTask<T> implements Runnable {
     private IHttpService httpService;
+    private FutureTask futureTask;
 
     public HttpTask(RequestHolder<T> requestHolder) {
         httpService = requestHolder.getHttpService();
@@ -36,5 +38,20 @@ public class HttpTask<T> implements Runnable {
         httpService.execute();
     }
 
+    public void start() {
+        futureTask = new FutureTask(this,null);
+        try {
 
+            ThreadPoolManager.getInstance().execute(futureTask);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void pause() {
+        httpService.pause();
+        if(futureTask != null) {
+            ThreadPoolManager.getInstance().removeTask(futureTask);
+        }
+    }
 }

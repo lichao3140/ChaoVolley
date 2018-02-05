@@ -19,9 +19,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void login(View view) {
-        User user = new User();
-        user.setName("lichao");
-        user.setPassword("123456");
+//        User user = new User();
+//        user.setName("lichao");
+//        user.setPassword("123456");
         Volley.sendRequest(null, url, NewsPager.class, new IDataListener<NewsPager>() {
             @Override
             public void onSuccess(NewsPager loginResponse) {

@@ -28,7 +28,6 @@ public class NewsPager {
     }
 
     public void setResult(Pager result) {
-
         this.result = result;
     }
 }

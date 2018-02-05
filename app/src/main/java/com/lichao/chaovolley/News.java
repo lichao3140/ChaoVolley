@@ -43,7 +43,6 @@ public class News {
 
     public void setAuthor_name(String author_name) {
         this.author_name = author_name;
-
     }
 
     @Override
